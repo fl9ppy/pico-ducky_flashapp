@@ -2,17 +2,39 @@ import os
 import shutil
 import time
 import stat
+import pyuac
 
-pico = 'E:/'
-nuke = 'C:/Users/adica/Documents/GitHub/pico-ducky_flashapp/flash_nuke.uf2'
-circuit_python = 'C:/Users/adica/Documents/GitHub/pico-ducky_flashapp/circuit_python.uf2'
-local_lib = 'C:/Users/adica/Documents/GitHub/pico-ducky_flashapp/lib'
+base_path = 'C:/Users/adica/Documents/GitHub/pico-ducky_flashapp'
+
+E = 'E:/'
+F = 'F:/'
+nuke = base_path+'/flash_nuke.uf2'
+circuit_python = base_path+'/circuit_python.uf2'
+local_lib = base_path+'/lib'
 pico_lib = 'F:/lib'
 
-shutil.copy2(nuke, pico)
+#def main():
+#        shutil.copy2(nuke, E)
+#        time.sleep(10)
+#        shutil.copy2(circuit_python, E)
+#        time.sleep(10)
+#        shutil.move(local_lib, F)
+#        time.sleep(60)
+#        input("Press enter to close the window. >")
+#
+#if __name__ == "__main__":
+#    if not pyuac.isUserAdmin():
+#        print("Re-launching as admin!")
+#        pyuac.runAsAdmin()
+#        main()
+#    else:        
+#        main()
+
+shutil.copy2(nuke, E)
 time.sleep(10)
-shutil.copy2(circuit_python, pico)
-pico = 'F:/'
+shutil.copy2(circuit_python, E)
 time.sleep(10)
 shutil.rmtree(pico_lib)
-shutil.copytree(local_lib, pico)
+time.sleep(10)
+shutil.copy2(local_lib, F)
+time.sleep(60)
