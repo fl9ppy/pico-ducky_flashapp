@@ -12,23 +12,10 @@ nuke = base_path+'/flash_nuke.uf2'
 circuit_python = base_path+'/circuit_python.uf2'
 local_lib = base_path+'/lib'
 pico_lib = 'F:/lib'
+asyncio = base_path+'/lib_aux/asyncio//'
+wsgi = base_path+'/lib_aux/adafruit_wsgi//'
+hid = base_path+'/lib_aux/adafruit_hid//'
 
-#def main():
-#        shutil.copy2(nuke, E)
-#        time.sleep(10)
-#        shutil.copy2(circuit_python, E)
-#        time.sleep(10)
-#        shutil.move(local_lib, F)
-#        time.sleep(60)
-#        input("Press enter to close the window. >")
-#
-#if __name__ == "__main__":
-#    if not pyuac.isUserAdmin():
-#        print("Re-launching as admin!")
-#        pyuac.runAsAdmin()
-#        main()
-#    else:        
-#        main()
 
 shutil.copy2(nuke, E)
 time.sleep(10)
@@ -37,4 +24,39 @@ time.sleep(10)
 shutil.rmtree(pico_lib)
 time.sleep(10)
 shutil.move(local_lib, F)
-time.sleep(40)
+os.mkdir(base_path+'/lib')
+time.sleep(10)
+os.mkdir(base_path+'/lib/asyncio')
+os.mkdir(base_path+'/lib/adafruit_wsgi')
+os.mkdir(base_path+'/lib/adafruit_hid')
+time.sleep(10)
+
+for file_name in os.listdir(asyncio):
+    source = asyncio + file_name
+    destination = base_path+'/lib/asyncio//' + file_name
+    if os.path.isfile(source):
+        shutil.copy2(source, destination)
+        print('Moved:', file_name)
+
+for file_name in os.listdir(wsgi):
+    source = wsgi + file_name
+    destination = base_path+'/lib/adafruit_wsgi//' + file_name
+    if os.path.isfile(source):
+        shutil.copy2(source, destination)
+        print('Moved:', file_name)
+
+for file_name in os.listdir(hid):
+    source = hid + file_name
+    destination = base_path+'/lib/adafruit_hid//' + file_name
+    if os.path.isfile(source):
+        shutil.copy2(source, destination)
+        print('Moved:', file_name)
+
+shutil.copy2(base_path+'/lib_aux/adafruit_debouncer.mpy', base_path+'/lib')
+shutil.copy2(base_path+'/lib_aux/adafruit_ticks.mpy', base_path+'/lib')
+
+print("finally")
+
+    
+
+
