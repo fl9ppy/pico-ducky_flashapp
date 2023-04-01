@@ -2,7 +2,6 @@ import os
 import shutil
 import time
 import stat
-import pyuac
 
 base_path = input("Path to repo: ")
 
@@ -36,21 +35,18 @@ for file_name in os.listdir(asyncio):
     destination = base_path+'/lib/asyncio//' + file_name
     if os.path.isfile(source):
         shutil.copy2(source, destination)
-        print('Moved:', file_name)
 
 for file_name in os.listdir(wsgi):
     source = wsgi + file_name
     destination = base_path+'/lib/adafruit_wsgi//' + file_name
     if os.path.isfile(source):
         shutil.copy2(source, destination)
-        print('Moved:', file_name)
 
 for file_name in os.listdir(hid):
     source = hid + file_name
     destination = base_path+'/lib/adafruit_hid//' + file_name
     if os.path.isfile(source):
         shutil.copy2(source, destination)
-        print('Moved:', file_name)
 
 shutil.copy2(base_path+'/lib_aux/adafruit_debouncer.mpy', base_path+'/lib')
 shutil.copy2(base_path+'/lib_aux/adafruit_ticks.mpy', base_path+'/lib')
