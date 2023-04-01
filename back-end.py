@@ -4,7 +4,7 @@ import time
 import stat
 import pyuac
 
-base_path = 'C:/Users/adica/Documents/GitHub/pico-ducky_flashapp'
+base_path = 'D:/GitHub/pico-ducky_flashapp'
 
 E = 'E:/'
 F = 'F:/'
@@ -36,5 +36,5 @@ shutil.copy2(circuit_python, E)
 time.sleep(10)
 shutil.rmtree(pico_lib)
 time.sleep(10)
-shutil.copy2(local_lib, F)
-time.sleep(60)
+shutil.move(local_lib, F)
+time.sleep(40)
