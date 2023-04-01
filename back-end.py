@@ -76,8 +76,8 @@ for file_name in os.listdir(res):
 
 
 
+print("Your pico is now a rubber ducky!")
 
-print("DONE")
 
     
 
