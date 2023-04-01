@@ -16,8 +16,10 @@ hid = base_path+'/lib_aux/adafruit_hid//'
 
 shutil.copy2(nuke, pico_nuke)
 time.sleep(10)
-shutil.copy2(circuit_python, pico_nuke)
-time.sleep(10)
+next = input("continue? y/n: ")
+if next == "y":
+    shutil.copy2(circuit_python, pico_nuke)
+    time.sleep(10)
 pico = input("Path to pico (After nuking it can change): ")
 pico_lib = pico+'/lib'
 shutil.rmtree(pico_lib)
