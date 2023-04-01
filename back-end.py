@@ -4,26 +4,26 @@ import time
 import stat
 import pyuac
 
-base_path = 'D:/GitHub/pico-ducky_flashapp'
+base_path = input("Path to repo: ")
 
-E = 'E:/'
-F = 'F:/'
+pico_nuke = input("Path to pico: ")
 nuke = base_path+'/flash_nuke.uf2'
 circuit_python = base_path+'/circuit_python.uf2'
 local_lib = base_path+'/lib'
-pico_lib = 'F:/lib'
 asyncio = base_path+'/lib_aux/asyncio//'
 wsgi = base_path+'/lib_aux/adafruit_wsgi//'
 hid = base_path+'/lib_aux/adafruit_hid//'
 
 
-shutil.copy2(nuke, E)
+shutil.copy2(nuke, pico_nuke)
 time.sleep(10)
-shutil.copy2(circuit_python, E)
+shutil.copy2(circuit_python, pico_nuke)
 time.sleep(10)
+pico = input("Path to pico (After nuking it can change): ")
+pico_lib = pico+'/lib'
 shutil.rmtree(pico_lib)
 time.sleep(10)
-shutil.move(local_lib, F)
+shutil.move(local_lib, pico)
 os.mkdir(base_path+'/lib')
 time.sleep(10)
 os.mkdir(base_path+'/lib/asyncio')
@@ -55,7 +55,7 @@ for file_name in os.listdir(hid):
 shutil.copy2(base_path+'/lib_aux/adafruit_debouncer.mpy', base_path+'/lib')
 shutil.copy2(base_path+'/lib_aux/adafruit_ticks.mpy', base_path+'/lib')
 
-print("finally")
+print("DONE")
 
     
 
