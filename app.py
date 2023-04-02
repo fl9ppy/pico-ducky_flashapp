@@ -20,18 +20,20 @@ l2 = tk.Label(text="Select the location of the pico")
 path1 = tk.Entry()
 path2 = tk.Entry()
 
-def repo_select():
-    x = filedialog.askdirectory()
-    path1.insert(0, x)
+#def repo_select():
+#    x = filedialog.askdirectory()
+#    path1.insert(0, x)
 
-def pico_location():
-    y = filedialog.askdirectory()
-    path2.insert(0, y)
+#def pico_location():
+#    y = filedialog.askdirectory()
+#    path2.insert(0, y)
 
 #constructing paths
-    
-base_path = str(path1.get())
-pico_nuke = str(path2.get())
+
+base_path = path1.get()
+pico_nuke = path2.get()
+print(base_path)
+
 nuke = base_path+'/flash_nuke.uf2'
 circuit_python = base_path+'/circuit_python.uf2'
 local_lib = base_path+'/lib'
@@ -53,7 +55,7 @@ def nuke_fun():
         root.destroy()
     done = showinfo(title="Info", message="Done, you can flash now")
 
-def flash(base_path, local_lib, asyncio, wsgi, hid, res):
+def flash():
 
     root2 = tk.Tk()
     root2.geometry("400x200")
@@ -115,17 +117,17 @@ def flash(base_path, local_lib, asyncio, wsgi, hid, res):
         if os.path.isfile(source):
             shutil.copy2(source, destination)
 
-select_base_path = tk.Button(text="Select", command=repo_select)
-select_pico_nuke = tk.Button(text="Select", command=pico_location)
+#select_base_path = tk.Button(text="Select", command=repo_select)
+#select_pico_nuke = tk.Button(text="Select", command=pico_location)
 format_pico  = tk.Button(text="Nuke", command=nuke_fun)
 flash_button = tk.Button(text="Flash", command=flash)
 
 title.pack()
 l1.place(x=30, y=120)
-select_base_path.place(x=30, y=150)
+#select_base_path.place(x=30, y=150)
 path1.place(x=80, y=153)
 l2.place(x=30, y=220)
-select_pico_nuke.place(x=30, y=250)
+#select_pico_nuke.place(x=30, y=250)
 path2.place(x=80, y=253)
 format_pico.place(x=423, y=470)
 flash_button.place(x=423, y=500)
