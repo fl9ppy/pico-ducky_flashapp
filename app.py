@@ -20,13 +20,13 @@ l2 = tk.Label(text="Select the location of the pico")
 path1 = tk.Entry()
 path2 = tk.Entry()
 
-#def repo_select():
-#    x = filedialog.askdirectory()
-#    path1.insert(0, x)
+def repo_select():
+    x = filedialog.askdirectory()
+    path1.insert(0, x)
 
-#def pico_location():
-#    y = filedialog.askdirectory()
-#    path2.insert(0, y)
+def pico_location():
+    y = filedialog.askdirectory()
+    path2.insert(0, y)
 
 #constructing paths
 
