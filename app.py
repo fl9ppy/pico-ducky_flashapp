@@ -61,30 +61,36 @@ def flash():
 
     root2 = tk.Tk()
     root2.geometry("400x200")
-    root2.resizable(False, False)
     l3 = tk.Label(root2, text="Select the pico path again (After installing circuitpython the path might change)")
+    pico = tk.Entry(root2)
     def pico_location():
-        pico = filedialog.askdirectory()
+        ask_pico = filedialog.askdirectory()
         time.sleep(3)
+        pico.insert(0, ask_pico)
         root2.destroy()
     select_pico = tk.Button(root2, text="Select", command=pico_location)
+
+    select_pico.pack()
+    pico.pack()
     l3.pack()
     root2.mainloop
     time.sleep(3)
 
     # moving libraries from the repo to the pico
-    pico_lib = pico+'/lib'
-    shutil.rmtree(pico_lib)
+## TODO: The next block of code executes instantly, make it execute after the pico path was choosen
+
+    pico_lib = pico.get()+'/lib'
+    os.remove(pico_lib)
     time.sleep(10)
-    shutil.move(local_lib, pico)
+    shutil.move(local_lib, pico.get())
 
 
     # re-creating another lib in the repo (because the original folder was moved to the pico) and re-creating it's subfolders
-    os.mkdir(base_path+'/lib')
+    os.mkdir(base_path.get()+'/lib')
     time.sleep(10)
-    os.mkdir(base_path+'/lib/asyncio')
-    os.mkdir(base_path+'/lib/adafruit_wsgi')
-    os.mkdir(base_path+'/lib/adafruit_hid')
+    os.mkdir(base_path.get()+'/lib/asyncio')
+    os.mkdir(base_path.get()+'/lib/adafruit_wsgi')
+    os.mkdir(base_path.get()+'/lib/adafruit_hid')
     time.sleep(10)
 
     # copying everything from the aux lib in the new lib
@@ -92,24 +98,24 @@ def flash():
     # from whom we copy the files to the new lib so we still have everything for multiple uses)
     for file_name in os.listdir(asyncio):
         source = asyncio + file_name
-        destination = base_path+'/lib/asyncio//' + file_name
+        destination = base_path.get()+'/lib/asyncio//' + file_name
         if os.path.isfile(source):
             shutil.copy2(source, destination)
 
     for file_name in os.listdir(wsgi):
         source = wsgi + file_name
-        destination = base_path+'/lib/adafruit_wsgi//' + file_name
+        destination = base_path.get()+'/lib/adafruit_wsgi//' + file_name
         if os.path.isfile(source):
             shutil.copy2(source, destination)
 
     for file_name in os.listdir(hid):
         source = hid + file_name
-        destination = base_path+'/lib/adafruit_hid//' + file_name
+        destination = base_path.get()+'/lib/adafruit_hid//' + file_name
         if os.path.isfile(source):
             shutil.copy2(source, destination)
 
-    shutil.copy2(base_path+'/lib_aux/adafruit_debouncer.mpy', base_path+'/lib')
-    shutil.copy2(base_path+'/lib_aux/adafruit_ticks.mpy', base_path+'/lib')
+    shutil.copy2(base_path.get()+'/lib_aux/adafruit_debouncer.mpy', base_path.get()+'/lib')
+    shutil.copy2(base_path.get()+'/lib_aux/adafruit_ticks.mpy', base_path.get()+'/lib')
 
     # copying the last files to the pico
     os.remove(pico+'code.py')
