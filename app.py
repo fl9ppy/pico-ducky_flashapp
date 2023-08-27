@@ -27,7 +27,7 @@ else:
     exit()
 
 #moving libraries from the repo to the pico
-pico = input("Path to pico (After installing circuitpython it might change): ")
+pico = input("Path to pico (After installing circuit python it might change): ")
 pico_lib = pico+'/lib'
 shutil.rmtree(pico_lib)
 time.sleep(10)
