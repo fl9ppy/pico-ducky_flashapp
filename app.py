@@ -77,4 +77,4 @@ for file_name in os.listdir(res):
 
 
 
-print("DONE")
+print("done")
