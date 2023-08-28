@@ -5,7 +5,7 @@ import stat
 
 
 
-#constructing paths
+#constructing the paths
 base_path = input("Path to repo: ")
 pico_nuke = input("Path to pico: ")
 nuke = base_path+'/flash_nuke.uf2'
