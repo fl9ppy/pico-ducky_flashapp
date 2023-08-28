@@ -16,7 +16,7 @@ wsgi = base_path+'/lib_aux/adafruit_wsgi//'
 hid = base_path+'/lib_aux/adafruit_hid//'
 res = base_path+'/res//'
 
-#nuke the pico and install circuitpython
+#nuke the pico and install circuit python
 shutil.copy2(nuke, pico_nuke)
 time.sleep(10)
 next = input("Pico nuked, continue? y/n: ")
