@@ -67,7 +67,7 @@ shutil.copy2(base_path+'/lib_aux/adafruit_debouncer.mpy', base_path+'/lib')
 shutil.copy2(base_path+'/lib_aux/adafruit_ticks.mpy', base_path+'/lib')
 
 #copying the last files to the pico
-os.remove(pico+'code.py')
+os.remove(pico+'/code.py')
 for file_name in os.listdir(res):
     source = res + file_name
     destination = pico+'//' + file_name
