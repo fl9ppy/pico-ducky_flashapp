@@ -2,66 +2,37 @@ import os
 import shutil
 import time
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 
 def flash_pico():
     # Retrieve input paths from GUI
     base_path = repo_path_entry.get()
     pico_nuke = pico_path_entry.get()
 
-    # Construct other necessary paths
-    nuke = os.path.join(base_path, 'flash_nuke.uf2')
-    circuit_python = os.path.join(base_path, 'circuit_python.uf2')
-    local_lib = os.path.join(base_path, 'lib')
-    asyncio = os.path.join(base_path, 'lib_aux', 'asyncio')
-    wsgi = os.path.join(base_path, 'lib_aux', 'adafruit_wsgi')
-    hid = os.path.join(base_path, 'lib_aux', 'adafruit_hid')
-    res = os.path.join(base_path, 'res')
+    # Construct necessary paths
+    circuit_python = os.path.join(base_path, 'circuitpython.uf2')
 
-    # Nuke the Pico and install CircuitPython
-    shutil.copy2(nuke, pico_nuke)
+    # Copy CircuitPython file to the Pico
+    shutil.copy2(circuit_python, pico_nuke)
     time.sleep(10)
-    next_step = tk.messagebox.askyesno("Nuke Successful", "Pico nuked successfully. Continue with CircuitPython installation?")
-    if next_step:
-        shutil.copy2(circuit_python, pico_nuke)
-        time.sleep(10)
-    else:
+    next_step = messagebox.askyesno("Copy Successful", "CircuitPython copied successfully. Continue with copying lib folder and .py files?")
+    if not next_step:
         return
 
-    # Move libraries from the repo to the Pico
+    # Copy lib folder to the Pico
     pico_lib = os.path.join(pico_nuke, 'lib')
     shutil.rmtree(pico_lib, ignore_errors=True)
-    time.sleep(10)
-    shutil.move(local_lib, pico_nuke)
+    time.sleep(2)
+    shutil.copytree(os.path.join(base_path, 'lib'), pico_lib)
 
-    # Recreate library structure in the repo
-    os.makedirs(os.path.join(base_path, 'lib', 'asyncio'), exist_ok=True)
-    os.makedirs(os.path.join(base_path, 'lib', 'adafruit_wsgi'), exist_ok=True)
-    os.makedirs(os.path.join(base_path, 'lib', 'adafruit_hid'), exist_ok=True)
-    time.sleep(10)
-
-    # Copy library files
-    for lib_folder in [asyncio, wsgi, hid]:
-        for file_name in os.listdir(lib_folder):
-            source = os.path.join(lib_folder, file_name)
-            if os.path.isfile(source):
-                if 'asyncio' in lib_folder:
-                    destination = os.path.join(base_path, 'lib', 'asyncio', file_name)
-                elif 'adafruit_wsgi' in lib_folder:
-                    destination = os.path.join(base_path, 'lib', 'adafruit_wsgi', file_name)
-                elif 'adafruit_hid' in lib_folder:
-                    destination = os.path.join(base_path, 'lib', 'adafruit_hid', file_name)
-                shutil.copy2(source, destination)
-
-    # Copy additional files to the Pico
-    os.remove(os.path.join(pico_nuke, 'code.py'), None)
-    for file_name in os.listdir(res):
-        source = os.path.join(res, file_name)
-        destination = os.path.join(pico_nuke, file_name)
-        if os.path.isfile(source):
+    # Copy .py files to the Pico
+    for file_name in os.listdir(base_path):
+        if file_name.endswith('.py'):
+            source = os.path.join(base_path, file_name)
+            destination = os.path.join(pico_nuke, file_name)
             shutil.copy2(source, destination)
 
-    tk.messagebox.showinfo("Success", "Script executed successfully. Pico flash and library setup complete.")
+    messagebox.showinfo("Success", "Script executed successfully. Pico flash and file copy complete.")
 
 # GUI setup
 root = tk.Tk()
