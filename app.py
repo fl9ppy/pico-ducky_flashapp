@@ -1,36 +1,89 @@
 import os
+import sys
 import shutil
 import time
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import ctypes
+
+def run_as_admin():
+    if sys.platform == 'win32':
+        try:
+            if not ctypes.windll.shell32.IsUserAnAdmin():
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+                sys.exit(0)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to run as admin: {e}")
+            sys.exit(1)
 
 def flash_pico():
+    
     # Retrieve input paths from GUI
     base_path = repo_path_entry.get()
-    pico_nuke = pico_path_entry.get()
+    pico_root_path = pico_path_entry.get()
 
     # Construct necessary paths
-    circuit_python = os.path.join(base_path, 'circuitpython.uf2')
+    flash_nuke = os.path.join(base_path, 'flash_nuke.uf2')
+    circuit_python = os.path.join(base_path, 'circuit_python.uf2')
+    PicoBoard = os.path.join(base_path, 'PicoBoard')
+    aux_folder = os.path.join(base_path, 'PicoBoard_Aux')
+    pico_lib = os.path.join(pico_root_path, 'lib')
 
-    # Copy CircuitPython file to the Pico
-    shutil.copy2(circuit_python, pico_nuke)
+    # Copy flash_nuke file to the Pico
+    shutil.copy2(flash_nuke, pico_root_path)
     time.sleep(10)
-    next_step = messagebox.askyesno("Copy Successful", "CircuitPython copied successfully. Continue with copying lib folder and .py files?")
+    next_step = messagebox.askyesno("Copy Successful", "Nuke file copied successfully. Continue?")
     if not next_step:
         return
 
-    # Copy lib folder to the Pico
-    pico_lib = os.path.join(pico_nuke, 'lib')
-    shutil.rmtree(pico_lib, ignore_errors=True)
-    time.sleep(2)
-    shutil.copytree(os.path.join(base_path, 'lib'), pico_lib)
+    # Copy CircuitPython file to the Pico
+    shutil.copy2(circuit_python, pico_root_path)
+    time.sleep(10)
+    next_step = messagebox.askyesno("Copy Successful", "CircuitPython copied successfully. Continue?")
+    if not next_step:
+        return
 
-    # Copy .py files to the Pico
-    for file_name in os.listdir(base_path):
-        if file_name.endswith('.py'):
-            source = os.path.join(base_path, file_name)
-            destination = os.path.join(pico_nuke, file_name)
-            shutil.copy2(source, destination)
+    def copy(src, dst):
+        if os.path.isdir(dst):
+            dst = os.path.join(dst, os.path.basename(src))
+        shutil.copyfile(src, dst)
+
+    # Copy files from PicoBoard to the Pico
+    for file_name in os.listdir(PicoBoard):
+        if file_name == 'lib':
+            for file_name2 in os.listdir(os.path.join(PicoBoard, 'lib')):
+                lib1 = os.path.join(PicoBoard, 'lib')
+                lib2 = os.path.join(pico_root_path, 'lib')
+                src = os.path.join(lib1, file_name2)
+                dest = os.path.join(lib2, file_name2)
+                shutil.move(src, dest)
+            continue
+        source = os.path.join(PicoBoard, file_name)
+        destination = os.path.join(pico_root_path, file_name)
+        shutil.move(source, destination)
+
+    # Copy files from auxiliary folder back to the lib folder
+    for file_name in os.listdir(aux_folder):
+        if file_name == 'lib':
+            for file_name2 in os.listdir(os.path.join(aux_folder, 'lib')):
+                lib1 = os.path.join(aux_folder, 'lib')
+                lib2 = os.path.join(PicoBoard, 'lib')
+                if file_name2 == 'adafruit_hid':
+                    for file_name3 in os.listdir(os.path.join(lib1, 'adafruit_hid')):
+                        lib3 = os.path.join(lib1, 'adafruit_hid')
+                        lib4 = os.path.join(lib2, 'adafruit_hid')
+                        src2 = os.path.join(lib3, file_name3)
+                        dest2 = os.path.join(lib4, file_name3)
+                        os.makedirs(os.path.dirname(dest2), exist_ok=True)
+                        shutil.copy2(src2, dest2)
+                    continue
+                src = os.path.join(lib1, file_name2)
+                dest = os.path.join(lib2, file_name2)
+                shutil.copy2(src, dest)
+            continue
+        source = os.path.join(aux_folder, file_name)
+        destination = os.path.join(PicoBoard, file_name)
+        shutil.copy2(source, destination)
 
     messagebox.showinfo("Success", "Script executed successfully. Pico flash and file copy complete.")
 
